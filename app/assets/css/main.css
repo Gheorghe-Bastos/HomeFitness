@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: 'Oswald', sans-serif;
+
+  --color-red-50: #FEF2F2;
+  --color-red-100: #FEE2E2;
+  --color-red-400: #d60202;
+  --color-red-500: #9b0000; /* Vermelho sangue mais fechado */
+  --color-red-600: #7f0000;
+  --color-red-700: #5f0000;
+  --color-red-800: #450000;
+  --color-red-900: #2d0000;
+}
