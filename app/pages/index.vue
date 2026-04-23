@@ -96,7 +96,7 @@ async function cadastro() {
 
   <div class="flex flex-col items-center justify-center gap-4 p-4">
     <UPageHero class="w-4xl" title="SEU ESPAÇO FITNESS"
-      description="Faça calculos de IMC e macronutrientes para manter-se saudável e em forma sem sair de casa." :ui="{
+      description="Descubra sua Taxa Metabólica Basal, IMC e Macronutrientes para manter-se saudável e em forma antes mesmo de sair de casa." :ui="{
         container: 'py-5 sm:py-5 lg:py-3'
       }" />
 
