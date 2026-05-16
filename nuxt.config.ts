@@ -2,8 +2,22 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
+    '@nuxtjs/supabase',
     '@nuxt/ui'
   ],
+
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
+    redirectOptions: {
+      login: '/authPage',
+      callback: 'confirm'
+    }
+  },
+
+  typescript: {
+    strict: true
+  },
 
   devtools: {
     enabled: true

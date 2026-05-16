@@ -14,11 +14,13 @@
     "@iconify-json/lucide": "^1.2.102",
     "@iconify-json/simple-icons": "^1.2.78",
     "@nuxt/ui": "^4.6.1",
+    "@supabase/supabase-js": "^2.105.4",
     "nuxt": "^4.4.2",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",
+    "@nuxtjs/supabase": "^2.0.8",
     "eslint": "^10.2.0",
     "typescript": "^6.0.2",
     "vue-tsc": "^3.2.6"

@@ -1,0 +1,98 @@
+redirect: se o usuario não foi encontrado ou não está autenticado, o supabase redireciona para
+a pagina index/login, para uma pagina poder ser acessada por qualquer usuario independentemente
+se ele está logado ou não, é necessario ir nuxt config e criar um parametro no modulo do supabase
+no nuxt.config.ts utilizando o parametro exclude;
+
+1. No Módulo de Autenticação (supabase.auth)
+
+Quando você usa métodos como signUp ou signInWithPassword, a resposta vem com a estrutura abaixo.
+
+📦 Atributos do Objeto data
+
+Se o login/cadastro der certo, data será um objeto com duas grandes propriedades:
+
+    user (Objeto com os dados de identidade do usuário):
+
+        id: string (O UUID único gerado para ele).
+
+        email: string (O e-mail cadastrado).
+
+        phone: string | undefined (Número de telefone, se houver).
+
+        email_confirmed_at: string (Data/hora em que o e-mail foi confirmado).
+
+        last_sign_in_at: string (Data/hora do último login).
+
+        role: string (Geralmente 'authenticated').
+
+        user_metadata: object (Metadados extras que você pode salvar no cadastro).
+
+        app_metadata: object (Dados internos do Supabase, como o provedor de login).
+
+        created_at e updated_at: string (Timestamps de criação e modificação).
+
+    session (Objeto com os tokens de acesso ao sistema):
+
+        access_token: string (O token JWT usado nas requisições seguras).
+
+        refresh_token: string (Token usado para renovar a sessão automaticamente).
+
+        expires_in: number (Tempo em segundos para o token expirar, ex: 3600).
+
+        expires_at: number (Timestamp exato de quando vai expirar).
+
+        token_type: string (Geralmente 'bearer').
+
+        user: (Uma cópia idêntica do objeto user descrito acima).
+
+🚨 Atributos do Objeto error (AuthApiError)
+
+Se a autenticação falhar, o error deixa de ser null e traz:
+
+    message: string (A mensagem amigável em inglês, ex: "Invalid login credentials" ou "User already registered").
+
+    status: number (O código de status HTTP da falha, ex: 400 para dados inválidos ou 422 para erro de validação).
+
+    name: string (O nome do tipo do erro, geralmente 'AuthApiError').
+
+Auth Error Codes:
+
+403 Proibido #
+Enviado em situações raras em que um determinado recurso do Auth não está disponível para o usuário, e você, como desenvolvedor, não está verificando uma condição prévia se essa API está disponível para o usuário.
+
+422 Entidade Inprocessável #
+Enviado quando a solicitação da API é aceita, mas não pode ser processada porque o usuário ou o servidor Auth está em um estado em que não pode satisfazer a solicitação.
+
+429 Pedidos Demais #
+Enviado quando os limites de taxa são violados para uma API. Você deve lidar com esse código de status com frequência, especialmente em funções que autenticam um usuário.
+
+500 Erro Interno do Servidor #
+Indicar que o serviço do servidor Auth está degradado. Na maioria das vezes, ele aponta para problemas na configuração do banco de dados, como um gatilho de mau comportamento em um esquema, função, exibição ou outro objeto de banco de dados.
+
+501 Não Implementado #
+Enviado para fora quando um recurso não está habilitado no servidor Auth, e você está tentando usar uma API que requer.
+
+2. No Módulo de Banco de Dados (supabase.from())
+
+Quando você faz requisições no banco (como .select(), .insert(), .update()), o comportamento muda drasticamente.
+📦 Atributos do Objeto data
+
+O data aqui não tem propriedades fixas. O formato dele depende totalmente da sua tabela e da sua query:
+
+    Se usar .select() ou .insert() padrão: data será um Array de Objetos [ { ... }, { ... } ], onde cada objeto dentro dele representa uma linha da sua tabela com as colunas que você pediu.
+
+    Se usar .single() no final da query: data deixa de ser um array e vira um único Objeto { ... } correspondente àquela linha (ou dá erro se achar mais de uma ou nenhuma).
+
+    Se a query falhar: data será rigorosamente null.
+
+🚨 Atributos do Objeto error (PostgrestError)
+
+Os erros vindos do banco de dados seguem o padrão do motor do PostgreSQL (chamado PostgrestError) e contêm atributos excelentes para depuração:
+
+    message: string (O texto direto do erro, ex: "duplicate key value violates unique constraint..." ou "relation 'tabela_errada' does not exist").
+
+    details: string | null (Detalhes técnicos do banco sobre o porquê falhou, ex: "Key (email)=(joao@email.com) already exists.").
+
+    hint: string | null (Uma dica do PostgreSQL de como resolver o problema).
+
+    code: string (O código nativo de erro do PostgreSQL. Excelente para fazer validações no código. Exemplo: o código '23505' sempre significa que você tentou inserir algo duplicado em uma coluna única).

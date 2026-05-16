@@ -1,15 +1,18 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
+import type { Usuario, Sexo, StatusAtvFisic, Objetivo } from '../types/usuario' 
 
-const nivelAtvFis = ref(['Sedentário', 'Baixa Frequência (2-3 dias por semana)', 'Média Frequência (4 dias por semana)', 'Alta Frequência (5-6 dias por semana)'])
-const defaultValue = ref('Sedentário')
-const sexo = ref(['Masculino', 'Feminino'])
-const defaultSexo = ref('Selecione seu sexo')
-const objetivo = ref(['Perder peso', 'Manter', 'Ganhar massa'])
-const defaultObjetivo = ref('Selecione seu objetivo')
 
-const idade = ref(18)
-const peso = ref(70)
+
+const nivelAtvFisInput = ref<string[]>(['Sedentário', 'Baixa Frequência (2-3 dias por semana)', 'Média Frequência (4 dias por semana)', 'Alta Frequência (5-6 dias por semana)'])
+const defaultAtvFis = ref('Sedentário')
+const sexoInput = ref<string[]>(['Masculino', 'Feminino'])
+const defaultSexoInput = ref('Selecione seu sexo')
+const objetivoInput = ref<string[]>(['Perder peso', 'Manter', 'Ganhar massa'])
+const defaultObjetivoInput = ref('Selecione seu objetivo')
+
+const idadeInput = ref<number>(18)
+const pesoInput = ref<number>(70)
 </script>
 
 <template>
@@ -30,15 +33,15 @@ const peso = ref(70)
         >
           <UFormField label="Seu sexo:">
             <USelect
-              v-model="defaultSexo"
+              v-model="defaultSexoInput"
               class="flex items-center justify-center w-full"
-              :items="sexo"
+              :items="sexoInput"
             />
           </UFormField>
 
           <UFormField label="Sua idade:">
             <UInputNumber
-              v-model="idade"
+              v-model="idadeInput"
               class="w-full"
               :min="14"
               :max="100"
@@ -47,7 +50,7 @@ const peso = ref(70)
 
           <UFormField label="Seu peso (em kg):">
             <UInputNumber
-              v-model="peso"
+              v-model="pesoInput"
               class="w-full"
               :min="35"
               :max="150"
@@ -56,17 +59,17 @@ const peso = ref(70)
 
           <UFormField label="Seu nível de atividade física:">
             <USelect
-              v-model="defaultValue"
+              v-model="defaultAtvFis"
               class="flex items-center justify-center w-full"
-              :items="nivelAtvFis"
+              :items="nivelAtvFisInput"
             />
           </UFormField>
 
           <UFormField label="Seu objetivo:">
             <USelect
-              v-model="defaultObjetivo"
+              v-model="defaultObjetivoInput"
               class="flex items-center justify-center w-full"
-              :items="objetivo"
+              :items="objetivoInput"
             />
           </UFormField>
         </UForm>

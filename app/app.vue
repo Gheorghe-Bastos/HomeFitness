@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import HeaderComp from '~/components/headerComp.vue'
 import { provide, ref } from 'vue'
 
@@ -26,29 +26,12 @@ useSeoMeta({
   twitterCard: 'summary_large_image'
 })
 
-const usuarios = ref([
-  {
-    email: 'gheorghe@exemplo.com',
-    senha: 'senha123'
-  },
-  {
-    email: 'mathias@exemplo.com',
-    senha: 'senha456'
-  },
-  {
-    email: 'ana.silva@treino.pt',
-    senha: 'seguranca789'
-  },
-  {
-    email: 'carlos.gym@fitness.com',
-    senha: 'power2024'
-  }
-])
-const erro = ref(false)
-const erroTitle = ref('')
-const erroDescription = ref('')
 
-provide('usuarios', usuarios)
+
+const erro = ref<boolean>(false)
+const erroTitle = ref<string>('')
+const erroDescription = ref<string>('')
+
 provide('erro', erro)
 provide('erroTitle', erroTitle)
 provide('erroDescription', erroDescription)
@@ -72,10 +55,6 @@ provide('erroDescription', erroDescription)
           <p class="text-muted text-sm">
             SALO - Hometech © {{ new Date().getFullYear() }}
           </p>
-          <UNavigationMenu
-            :items="items"
-            variant="link"
-          />
 
           <div>
             <UButton

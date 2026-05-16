@@ -1,16 +1,64 @@
-<script setup>
-import { inject, ref } from 'vue'
+<script setup lang="ts">
+import { inject, ref } from 'vue';
 
-const usuarios = inject('usuarios')
-const erro = inject('erro')
-const erroDescription = inject('erroDescription')
-const emailInput = ref('')
-const senhaInput = ref('')
-const cadastrar = ref(false)
+const supabase = useSupabaseClient()
+
+const erro = inject<Ref<boolean>>('erro', ref(false))
+const erroDescription = inject<Ref<string>>('erroDescription', ref(''))
+const emailInput = ref<string>('')
+const senhaInput = ref<string>('')
+const cadastrar = ref<boolean>(false)
 const toast = useToast()
 
-async function autenticacao() {
+async function entrar(){
   console.log('Autenticando usuário...')
+  erro.value = false
+  const userEmail: string = emailInput.value.trim()
+  const userPassword: string = senhaInput.value.trim()
+
+  if (userEmail === '' || userPassword === '') {
+    erro.value = true
+    erroDescription.value = 'Por favor, preencha todos os campos.'
+
+    return
+  }
+
+  try {
+      const { data, error: loginError } = await supabase.auth.signInWithPassword({
+      email: userEmail,
+      password: userPassword,
+    })
+
+    console.log('Resposta do supabase.login:', { data, loginError })
+
+    if (loginError) {
+      erro.value = true
+      erroDescription.value = loginError.message
+      console.log('Login falhou:', loginError.message)
+      return
+    }
+
+    const usuarioEncontrado: string = data?.user?.email || ''
+    console.log('Login bem sucedido, usuário:', usuarioEncontrado)
+    provide('usuarioEncontrado', usuarioEncontrado)
+
+    await navigateTo('/abaFitness')
+  }
+
+  catch (err) {
+    console.error('Erro inesperado no login:', err)
+    erro.value = true
+    erroDescription.value = 'Ocorreu um erro durante o login. Por favor, tente novamente.'
+    return
+  }
+
+  finally {
+    emailInput.value = ''
+    senhaInput.value = ''
+  }
+}
+
+async function cadastro() {
   erro.value = false
   const userEmail = emailInput.value.trim()
   const userPassword = senhaInput.value.trim()
@@ -22,68 +70,48 @@ async function autenticacao() {
     return
   }
 
-  const usuarioEncontrado = usuarios.value.find(u => u.email === userEmail)
+  try {
+    const { data, error: registerError } = await supabase.auth.signUp({
+      email: userEmail,
+      password: userPassword,
+    })
 
-  if (!usuarioEncontrado) {
-    erro.value = true
-    erroDescription.value = 'Usuário inválido, tente novamente.'
-    emailInput.value = ''
-    senhaInput.value = ''
+    console.log('Resposta do supabase.signUp:', { data, registerError })
 
-    return
-  }
+    if (registerError) {
+      console.log('Cadastro falhou:', registerError.message)
 
-  if (usuarioEncontrado) {
-    if (usuarioEncontrado.senha !== userPassword) {
+      if (registerError.status === 422) {
+        erro.value = true
+        erroDescription.value = 'Este email já está em uso. Por favor, tente outro email ou faça login.'
+        return
+      }
+
       erro.value = true
-      erroDescription.value = 'Senha incorreta, tente novamente.'
-      senhaInput.value = ''
-
+      erroDescription.value = 'Ocorreu um erro durante o cadastro. Por favor, tente novamente.'
       return
     }
 
-    console.log('Usuário autenticado com sucesso:', usuarioEncontrado)
+    toast.add({ title: 'Cadastro bem sucedido', description: 'Redirecionando para a pagina principal...' })
 
-    emailInput.value = ''
-    senhaInput.value = ''
+    const usuarioCadastrado: string = data?.user?.email || ''
+    console.log('Cadastro bem sucedido, usuário:', usuarioCadastrado)
+    provide('usuarioCadastrado', usuarioCadastrado)
 
     await navigateTo('/abaFitness')
   }
-}
 
-async function cadastro() {
-  erro.value = false
-  const userEmail = emailInput.value.trim()
-  const userPassword = senhaInput.value
-
-  if (!userEmail || !userPassword) {
+  catch (err) {
+    console.error('Erro inesperado no cadastro:', err)
     erro.value = true
-    erroDescription.value = 'Por favor, preencha todos os campos.'
-
+    erroDescription.value = 'Ocorreu um erro durante o cadastro. Por favor, tente novamente.'
     return
-  };
-
-  const usuarioExiste = usuarios.value.find(u => u.email === userEmail)
-
-  if (usuarioExiste) {
-    erro.value = true
-    erroDescription.value = 'Este email já está cadastrado. Por favor, use outro email.'
-
-    return false
   }
 
-  const novoUsuario = {
-    email: userEmail,
-    senha: userPassword
+  finally {
+    emailInput.value = ''
+    senhaInput.value = ''
   }
-
-  usuarios.value.push(novoUsuario)
-
-  console.log(usuarios.value.at(-1))
-
-  toast.add({ title: 'Login bem sucedido', description: 'Redirecionando para a pagina principal...' })
-
-  await navigateTo('/abaFitness')
 }
 </script>
 
@@ -119,7 +147,7 @@ async function cadastro() {
 
       <UForm
         class="flex flex-col gap-3"
-        @submit="cadastro"
+        @submit.prevent="cadastro"
       >
         <p
           v-if="erro"
@@ -147,10 +175,10 @@ async function cadastro() {
         </UFormField>
 
         <UButton
+          type="submit"
           color="primary"
           variant="solid"
           class="w-full flex items-center justify-center"
-          @click="cadastro"
         >
           CADASTRAR
         </UButton>
@@ -189,7 +217,7 @@ async function cadastro() {
 
       <UForm
         class="flex flex-col gap-3"
-        @submit="autenticacao"
+        @submit.prevent="entrar"
       >
         <p
           v-if="erro"
@@ -217,10 +245,10 @@ async function cadastro() {
         </UFormField>
 
         <UButton
+          type="submit"
           color="primary"
           variant="solid"
           class="w-full flex items-center justify-center"
-          @click="autenticacao"
         >
           ENTRAR
         </UButton>
