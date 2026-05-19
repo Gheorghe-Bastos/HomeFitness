@@ -1,24 +1,24 @@
-enum Sexo {
+export enum Sexo {
     masculino = 'Masculino',
     feminino = 'Feminino'
 }
 
-enum StatusAtvFisic {
+export enum StatusAtvFisic {
     sedentario = 'Sedentário(a)',
     baixaFreq = 'Baixa Frequencia (2 - 3 dias por semana)',
     mediaFreq = 'Média Frequência (4 dias por semana)',
-    altaFrequencia = 'Alta Frequência (5-6 dias por semana)'
+    altaFreq = 'Alta Frequência (5-6 dias por semana)'
 }
 
-enum Objetivo {
+export enum Objetivo {
   perderPeso = 'Perder peso',
   manter = 'Manter peso',
   ganhoMassa = 'Ganho de massa'
 }
 
 export type Usuario = {
+  id: string,
   email: string,
-  senha: string,
   perfil?: {
     sexo: Sexo,
     idade: number,

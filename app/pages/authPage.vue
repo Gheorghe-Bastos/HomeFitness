@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
+import type { Usuario } from '../types/usuario';
 
 const supabase = useSupabaseClient()
 
@@ -32,16 +33,25 @@ async function entrar(){
     console.log('Resposta do supabase.login:', { data, loginError })
 
     if (loginError) {
+     
+      if (loginError.status === 422) {
+        erro.value = true
+        erroDescription.value = 'Este email já está em uso. Por favor, tente outro email ou faça login.'
+        return
+      }
+      
       erro.value = true
       erroDescription.value = loginError.message
       console.log('Login falhou:', loginError.message)
       return
     }
+    
+    const usuarioLogado: Usuario = {
+      id: data?.user?.id || '',
+      email: userEmail
+    }
 
-    const usuarioEncontrado: string = data?.user?.email || ''
-    console.log('Login bem sucedido, usuário:', usuarioEncontrado)
-    provide('usuarioEncontrado', usuarioEncontrado)
-
+    console.log('Login bem sucedido, usuário:', usuarioLogado)
     await navigateTo('/abaFitness')
   }
 
@@ -94,10 +104,12 @@ async function cadastro() {
 
     toast.add({ title: 'Cadastro bem sucedido', description: 'Redirecionando para a pagina principal...' })
 
-    const usuarioCadastrado: string = data?.user?.email || ''
-    console.log('Cadastro bem sucedido, usuário:', usuarioCadastrado)
-    provide('usuarioCadastrado', usuarioCadastrado)
-
+    const usuarioLogado: Usuario = {
+      id: data?.user?.id || '',
+      email: userEmail
+    }
+    
+    console.log('Cadastro bem sucedido, usuário:', usuarioLogado)
     await navigateTo('/abaFitness')
   }
 
@@ -231,7 +243,7 @@ async function cadastro() {
             v-model="emailInput"
             class="w-full"
             type="email"
-            placeholder="Digite seu email"
+            placeholder="Digite seu email"  
           />
         </UFormField>
 
