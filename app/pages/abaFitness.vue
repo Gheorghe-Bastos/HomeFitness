@@ -1,14 +1,55 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue'
+import { ref } from 'vue'
 import { Sexo, type Usuario, StatusAtvFisic, Objetivo } from '../types/usuario'
 import type { SelectItem } from '@nuxt/ui'
 
-const supabase = useSupabaseClient()
+const supabase = useSupabaseClient<any>()
 const user = useSupabaseUser()
+
+const tabelaExiste = ref<boolean>(false)
+const usuarioAutenticado = ref<Usuario>({
+  id: '',
+  email: '',
+})
+
+const {data: { session }} = await supabase.auth.getSession()
+  
+if (session?.user) {
+  usuarioAutenticado.value = {
+    id: session.user.id,
+    email: session.user.email || '',
+  }
+}
+
+async function verificarDadosUsuario() {
+  if (!usuarioAutenticado.value.id) {
+    console.error('Usuário não autenticado. Não é possível verificar dados sem um usuário válido.')
+    return
+  }
+  const { data, error: selectError } = await supabase
+    .from('usuario')
+    .select('perfil')
+    .eq('id', usuarioAutenticado.value.id)
+    .single()
+
+  if (selectError) {
+    console.error('Erro ao buscar dados do usuário:', selectError)
+    return
+  }
+
+  if (data?.perfil) {
+    usuarioAutenticado.value.perfil = data.perfil
+    console.log('Dados do usuário encontrados:', data)
+    tabelaExiste.value = true
+    return
+  }
+}
+
+verificarDadosUsuario()
 
 const defaultAtvFis = ref<StatusAtvFisic>(StatusAtvFisic.sedentario)
 const defaultSexoInput = ref<Sexo>(Sexo.masculino)
-const defaultObjetivoInput = ref<Objetivo>(Objetivo.perderPeso)
+const defaultObjetivoInput = ref<Objetivo>(Objetivo.manter)
 
 const nivelAtvFisInput = ref<SelectItem[]>([
   { label: 'Sedentário', value: StatusAtvFisic.sedentario },
@@ -32,44 +73,51 @@ const idadeInput = ref<number>(18)
 const pesoInput = ref<number>(70)
 const alturaInput = ref<number>(170)
 
-const imc = ref<number>(pesoInput.value / ((alturaInput.value / 100) ** 2))
-const tmb = ref<number>((10 * pesoInput.value) + (6.25 * alturaInput.value) - (5 * idadeInput.value))
-
 let gProteinaPorKg: number = 0
-let gCarboPorKg: number = 0
 let gGorduraPorKg: number = 0
 
 async function calcular() {
-  
+
+  if (!usuarioAutenticado.value.id) {
+    console.error('Usuário não autenticado. Não é possível calcular sem um usuário válido.')
+    return
+  }
+
+  const imc: number = pesoInput.value / ((alturaInput.value / 100) ** 2)
+  const imcFormatado = ref<number>(parseFloat(imc.toFixed(2)))
+  const tmb = ref<number>((10 * pesoInput.value) + (6.25 * alturaInput.value) - (5 * idadeInput.value))
+
   try {
 
-    if (defaultSexoInput.value === sexoInput.value[0]) {
-      tmb.value -= 161
-    }
-    if (defaultSexoInput.value === sexoInput.value[1]) {
+    let multiplicador: number = 1.2
+
+    if (defaultSexoInput.value === Sexo.masculino) {
       tmb.value += 5
     }
-    if (defaultAtvFis.value === nivelAtvFisInput.value[0]) {
-        tmb.value *= 1.2
-    }
-    else if (defaultAtvFis.value === nivelAtvFisInput.value[1]) {
-      tmb.value *= 1.375
-    } 
-    else if (defaultAtvFis.value === nivelAtvFisInput.value[2]) {
-      tmb.value *= 1.55
-    }
-    else if (defaultAtvFis.value === nivelAtvFisInput.value[3]) {
-      tmb.value *= 1.725
+    else {
+      tmb.value -= 161
     }
 
-    const caloriasObjetivo = ref<number>(tmb.value)
+    if (defaultAtvFis.value === StatusAtvFisic.baixaFreq) {
+      multiplicador = 1.375
+    }
+    else if (defaultAtvFis.value === StatusAtvFisic.mediaFreq) {
+      multiplicador = 1.55
+    }
+    else if (defaultAtvFis.value === StatusAtvFisic.altaFreq) {
+      multiplicador = 1.725
+    }
 
-    if (defaultObjetivoInput.value === objetivoInput.value[0]) {
+    const get = ref<number>(Math.round(tmb.value * multiplicador))
+
+    const caloriasObjetivo = ref<number>(get.value)
+
+    if (defaultObjetivoInput.value === Objetivo.perderPeso) {
       caloriasObjetivo.value -= 450
       gProteinaPorKg = 2.0
       gGorduraPorKg = 0.8
     }
-    else if (defaultObjetivoInput.value === objetivoInput.value[2]) {
+    else if (defaultObjetivoInput.value === Objetivo.ganhoMassa) {
       caloriasObjetivo.value += 400
       gProteinaPorKg = 2.0
       gGorduraPorKg = 1.0
@@ -79,16 +127,16 @@ async function calcular() {
       gGorduraPorKg = 1.0
     }
 
-    const proteinaFinal = ref<number>(gProteinaPorKg * pesoInput.value)
-    const gorduraFinal = ref<number>(gGorduraPorKg * pesoInput.value)
+    const proteinaFinal = ref<number>(Math.round(gProteinaPorKg * pesoInput.value))
+    const gorduraFinal = ref<number>(Math.round(gGorduraPorKg * pesoInput.value))
     const kcalUsadas: number = (proteinaFinal.value * 4) + (gorduraFinal.value * 9)
 
-    let gCarboPorKg = ref<number>((caloriasObjetivo.value - kcalUsadas) / 4)
+    const gCarboPorKg = ref<number>(Math.round((caloriasObjetivo.value - kcalUsadas) / 4))
     
-    const usuarioAtualizado = ref<Usuario>({
-      id: user.value?.id,
-      email: user.value?.email || '',
-        perfil: {
+    usuarioAutenticado.value = {
+      id: usuarioAutenticado.value.id,
+      email: usuarioAutenticado.value.email || '',
+      perfil: {
         sexo: defaultSexoInput.value,
         idade: idadeInput.value,
         peso: pesoInput.value,
@@ -96,14 +144,34 @@ async function calcular() {
         nivelAtvFisic: defaultAtvFis.value,
         objetivo: defaultObjetivoInput.value,
         TMB: tmb.value,
-        IMC: imc.value,
+        GET: get.value,
+        IMC: imcFormatado.value,
         macronutri: {
           proteina: proteinaFinal.value,
           carbo: gCarboPorKg.value,
           gordura: gorduraFinal.value
         }
       }
-    })
+    }
+
+    const { error: dbError } = await supabase
+      .from('usuario')
+      .insert({
+        id: usuarioAutenticado.value.id,
+        email: usuarioAutenticado.value.email,
+        perfil: usuarioAutenticado.value.perfil
+      })
+    
+    if (dbError) {
+      console.error('Erro ao salvar os dados no banco:', dbError.message)
+      return
+    }
+     
+    console.log('Dados salvos com sucesso no banco de dados!')
+    console.log(usuarioAutenticado.value)
+
+    tabelaExiste.value = true
+
   }
   catch (err) {
     console.error('Erro inesperado no cálculo:', err)
@@ -111,19 +179,53 @@ async function calcular() {
   }
 }
 
-const listaDados = ref([
-  {
-    tituloTMBIMC: 'Taxa Metabólica Basal',
-    description: 'A taxa metabólica basal (TMB) é a quantidade de calorias que seu corpo precisa para realizar funções básicas em repouso, como respirar, manter a temperatura corporal e a circulação sanguínea. Ela representa a energia mínima necessária para manter as funções vitais do corpo.',
-    valor: tmb.value
-  },
+const listaDadosTBMIMC = computed(() => {
 
-  {
-    tituloTMBIMC: 'Índice de Massa Corporal',
-    description: 'O índice de massa corporal (IMC) é uma medida que relaciona o peso e a altura de uma pessoa para avaliar se ela está dentro de um peso saudável. O IMC é calculado dividindo o peso em quilogramas pela altura em metros ao quadrado (kg/m²).',
-    valor: imc.value
-  }
-])
+  if (!tabelaExiste.value || !usuarioAutenticado.value.perfil) return []
+
+  return [
+    {
+      tituloTMBIMC: 'Taxa Metabólica Basal',
+      description: 'A taxa metabólica basal (TMB) é a quantidade de calorias que seu corpo precisa para realizar funções básicas em repouso, como respirar, manter a temperatura corporal e a circulação sanguínea. Ela representa a energia mínima necessária para manter as funções vitais do corpo.',
+      valor: usuarioAutenticado.value.perfil.TMB,
+      unidade: 'kcal/dia'
+    },
+
+    {
+      tituloTMBIMC: 'Índice de Massa Corporal',
+      description: 'O índice de massa corporal (IMC) é uma medida que relaciona o peso e a altura de uma pessoa para avaliar se ela está dentro de um peso saudável. O IMC é calculado dividindo o peso em quilogramas pela altura em metros ao quadrado (kg/m²).',
+      valor: usuarioAutenticado.value.perfil.IMC,
+      unidade: 'kg/m²'
+    }
+  ]
+})
+
+const listaDadosMacros = computed(() => {
+  if (!tabelaExiste.value || !usuarioAutenticado.value.perfil) return []
+
+  return [
+    {
+      tituloMacro: 'Carboidratos',
+      description: 'Os carboidratos são a principal fonte de energia para o corpo. Eles são encontrados em alimentos como pães, massas, arroz, frutas e vegetais. A quantidade de carboidratos que uma pessoa deve consumir diariamente pode variar dependendo do seu nível de atividade física, objetivos e necessidades individuais.',
+      valor: usuarioAutenticado.value.perfil.macronutri.carbo,
+      unidade: 'g/dia'
+    },
+
+    {
+      tituloMacro: 'Proteínas',
+      description: 'As proteínas são essenciais para a construção e reparação dos tecidos do corpo, além de desempenharem um papel importante na função imunológica e na produção de enzimas e hormônios. Alimentos ricos em proteínas incluem carnes, peixes, ovos, laticínios, leguminosas e nozes.',
+      valor: usuarioAutenticado.value.perfil.macronutri.proteina,
+      unidade: 'g/dia'
+    },
+
+    {
+      tituloMacro: 'Gorduras',
+      description: 'As gorduras são uma fonte concentrada de energia e são importantes para a absorção de vitaminas lipossolúveis (A, D, E e K), além de desempenharem um papel crucial na saúde celular e na produção de hormônios. Fontes saudáveis de gorduras incluem abacate, azeite de oliva, nozes, sementes e peixes gordurosos.',
+      valor: usuarioAutenticado.value.perfil.macronutri.gordura,
+      unidade: 'g/dia'
+    }
+  ]
+})
 
 </script>
 
@@ -165,37 +267,46 @@ const listaDados = ref([
         </UForm>
       </UPageCard>
 
-      <UPageCard ip="dadosDiv" class="w-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
-        <div class="flex justify-around gap-5" v-for="(item, index) in listaDados" :key="index">
 
-          <UPageCard class=w-full>
-            <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">{{item.tituloTMBIMC}}</p>
-            <p class="mt-3 text-3xl font-semibold text-primary">{{ item.valor }} kcal</p>
-            <p class="mt-2 text-sm text-neutral-500">Taxa metabólica basal estimada</p>
-          </UPageCard>
+      <UPageCard v-if="tabelaExiste" ip="dadosDiv" class="w-full light:shadow-[0px_0px_10px]">
+        <div class="flex justify-around gap-5">
+          <div class="flex w-full" v-for="(item, index) in listaDadosTBMIMC" :key="index">
 
+            <UPageCard class="w-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
+              <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">{{ item.tituloTMBIMC }}</p>
+              <p class="mt-3 text-3xl font-semibold light:text-primary">{{ item.valor }} {{ item.unidade }}</p>
+              <p class="mt-2 text-sm text-neutral-500">{{ item.description }}</p>
+            </UPageCard>
+
+          </div>
         </div>
 
-        <UPageGrid>
-          <UPageCard>
-            <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">Carboidratos</p>
-            <p class="mt-3 text-3xl font-semibold text-primary">432 g</p>
-            <p class="mt-2 text-sm text-neutral-500">Quantidade diária estimada</p>
+        <div class="flex justify-around gap-3">
+
+          <UPageCard class="w-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
+            <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">Gasto Energético Total</p>
+            <p class="mt-3 text-3xl font-semibold light:text-primary">{{ usuarioAutenticado.perfil?.GET }} kcal</p>
+            <p class="mt-2 text-sm text-neutral-500">Este é o seu gasto energético diário levando em conta sua atividade
+              física.</p>
           </UPageCard>
 
-          <UPageCard>
-            <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">Proteína</p>
-            <p class="mt-3 text-3xl font-semibold text-primary">95 g</p>
-            <p class="mt-2 text-sm text-neutral-500">Quantidade diária estimada</p>
-          </UPageCard>
 
-          <UPageCard>
-            <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">Gordura</p>
-            <p class="mt-3 text-3xl font-semibold text-primary">45 g</p>
-            <p class="mt-2 text-sm text-neutral-500">Quantidade diária estimada</p>
-          </UPageCard>
-        </UPageGrid>
+          <div class="w-full" v-for="(itens, index) in listaDadosMacros" :key="index">
+            <UPageCard class="flex h-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
+              <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">{{ itens.tituloMacro }}</p>
+              <p class="mt-3 text-3xl font-semibold light:text-primary">{{ itens.valor }} {{ itens.unidade }}</p>
+              <p class="mt-2 text-sm text-neutral-500">Quantidade diária estimada para a sua meta desejada.</p>
+            </UPageCard>
+          </div>
+
+        </div>
       </UPageCard>
+
+      <UPageCard v-else class="w-full h-full font-bold p-4 light:shadow-[0px_0px_10px]" :ui="{
+        container: 'justify-center items-center'
+      }" spotlight spotlight-color="primary" title="PREENCHA SEUS DADOS"
+        description="Veja os resultados do seu cálculo após preencher todos os dados." />
+
     </div>
   </main>
 </template>

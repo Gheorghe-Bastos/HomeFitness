@@ -33,7 +33,13 @@ async function entrar(){
     console.log('Resposta do supabase.login:', { data, loginError })
 
     if (loginError) {
-     
+      
+      if (loginError.status === 400) {
+        erro.value = true
+        erroDescription.value = 'Email ou senha incorretos. Por favor, tente novamente.'
+        return
+      }
+
       if (loginError.status === 422) {
         erro.value = true
         erroDescription.value = 'Este email já está em uso. Por favor, tente outro email ou faça login.'
@@ -93,7 +99,7 @@ async function cadastro() {
 
       if (registerError.status === 422) {
         erro.value = true
-        erroDescription.value = 'Este email já está em uso. Por favor, tente outro email ou faça login.'
+        erroDescription.value = 'Senha inválida ou o email já está em uso. Tente outro email ou crie uma senha de no minimo 6 dígitos.'
         return
       }
 

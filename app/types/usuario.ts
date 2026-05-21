@@ -27,6 +27,7 @@ export type Usuario = {
     nivelAtvFisic: StatusAtvFisic,
     objetivo: Objetivo,
     TMB: number,
+    GET: number,
     IMC: number,
     macronutri: {
       proteina: number,
