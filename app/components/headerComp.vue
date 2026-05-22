@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { inject, ref } from 'vue';
+
+const abaFitnessAtiva = inject<Ref<boolean>>('abaFitnessAtiva', ref(false))
+
+async function voltar() {
+  abaFitnessAtiva.value = false
+  navigateTo('/authPage')
+}
 
 </script>
 
@@ -20,6 +28,12 @@
     </template>
 
     <template #right>
+      <UButton
+        v-if="abaFitnessAtiva"
+        color="primary"
+        variant="outline"
+        icon="mdi:exit-run"
+        @click="voltar"/>
       <UColorModeButton />
     </template>
   </UHeader>

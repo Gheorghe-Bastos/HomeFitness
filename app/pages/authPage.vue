@@ -3,7 +3,6 @@ import { inject, ref } from 'vue';
 import type { Usuario } from '../types/usuario';
 
 const supabase = useSupabaseClient()
-
 const erro = inject<Ref<boolean>>('erro', ref(false))
 const erroDescription = inject<Ref<string>>('erroDescription', ref(''))
 const emailInput = ref<string>('')

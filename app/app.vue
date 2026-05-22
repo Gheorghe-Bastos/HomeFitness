@@ -31,10 +31,12 @@ useSeoMeta({
 const erro = ref<boolean>(false)
 const erroTitle = ref<string>('')
 const erroDescription = ref<string>('')
+const abaFitnessAtiva = ref<boolean>(false)
 
 provide('erro', erro)
 provide('erroTitle', erroTitle)
 provide('erroDescription', erroDescription)
+provide('abaFitnessAtiva', abaFitnessAtiva)
 </script>
 
 <template>

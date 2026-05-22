@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 import { Sexo, type Usuario, StatusAtvFisic, Objetivo } from '../types/usuario'
 import type { SelectItem } from '@nuxt/ui'
 
 const supabase = useSupabaseClient<any>()
-const user = useSupabaseUser()
+
+const abaFitnessAtiva = inject<Ref<boolean>>('abaFitnessAtiva', ref(false))
+
+abaFitnessAtiva.value = true
 
 const tabelaExiste = ref<boolean>(false)
 const usuarioAutenticado = ref<Usuario>({
@@ -154,19 +157,55 @@ async function calcular() {
       }
     }
 
-    const { error: dbError } = await supabase
+    const { data: perfilExiste, error: errorPerfilExiste } = await supabase
       .from('usuario')
-      .insert({
-        id: usuarioAutenticado.value.id,
-        email: usuarioAutenticado.value.email,
-        perfil: usuarioAutenticado.value.perfil
-      })
-    
-    if (dbError) {
-      console.error('Erro ao salvar os dados no banco:', dbError.message)
+      .select('perfil')
+      .eq('id', usuarioAutenticado.value.id)
+      .single()
+
+    if (errorPerfilExiste) {
+      console.error('Erro ao verificar se o perfil do usuário existe:', errorPerfilExiste.message)
       return
     }
-     
+      
+    if (perfilExiste?.perfil) {
+
+      if (perfilExiste.perfil === usuarioAutenticado.value.perfil) {
+        console.log('O perfil do usuário já está atualizado no banco de dados. Nenhuma ação necessária.')
+        return
+      }
+
+      const { data: dbPerfilUpdate, error: dbErrorUpdate } = await supabase
+      .from('usuario')
+      .update({perfil: usuarioAutenticado.value.perfil})
+      .eq('id', usuarioAutenticado.value.id)
+
+      if (dbErrorUpdate) {
+        console.error('Erro em fazer o update da sua coluna no banco:', dbErrorUpdate.message)
+        return
+      }
+
+      console.log('Perfil do usuário atualizado com sucesso no banco de dados!', dbPerfilUpdate)
+    }
+
+    if (perfilExiste === null) {
+    
+      const { data: dbPerfilInsert, error: dbInsertError } = await supabase
+        .from('usuario')
+        .insert({
+          id: usuarioAutenticado.value.id,
+          email: usuarioAutenticado.value.email,
+          perfil: usuarioAutenticado.value.perfil
+        })
+
+      if (dbInsertError) {
+        console.error('Erro ao inserir os dados na sua coluna do banco:', dbInsertError.message)
+        return
+      }
+
+      console.log('Perfil do usuário inserido com sucesso no banco de dados!', dbPerfilInsert)
+    }
+
     console.log('Dados salvos com sucesso no banco de dados!')
     console.log(usuarioAutenticado.value)
 
@@ -268,39 +307,41 @@ const listaDadosMacros = computed(() => {
       </UPageCard>
 
 
-      <UPageCard v-if="tabelaExiste" ip="dadosDiv" class="w-full light:shadow-[0px_0px_10px]">
-        <div class="flex justify-around gap-5">
-          <div class="flex w-full" v-for="(item, index) in listaDadosTBMIMC" :key="index">
+      <div v-if="tabelaExiste" ip="dadosDiv" class="flex flex-col justify-around gap-7 h-full w-full m-0">
+        
+        <!-- <h1 class="text-3xl text-primary">AQUI ESTÃO OS RESULTADOS<UIcon name="hugeicons:body-part-six-pack"/></h1> -->
+        <div class="flex justify-around h-full gap-5">
+          <div class="flex w-full h-full" v-for="(item, index) in listaDadosTBMIMC" :key="index">
 
-            <UPageCard class="w-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
+            <UPageCard class="w-full h-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
               <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">{{ item.tituloTMBIMC }}</p>
-              <p class="mt-3 text-3xl font-semibold light:text-primary">{{ item.valor }} {{ item.unidade }}</p>
+              <p class="mt-3 text-3xl font-semibold text-primary">{{ item.valor }} {{ item.unidade }}</p>
               <p class="mt-2 text-sm text-neutral-500">{{ item.description }}</p>
             </UPageCard>
 
           </div>
         </div>
 
-        <div class="flex justify-around gap-3">
+        <div class="flex justify-around h-full gap-3">
 
-          <UPageCard class="w-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
+          <UPageCard class="w-full h-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
             <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">Gasto Energético Total</p>
-            <p class="mt-3 text-3xl font-semibold light:text-primary">{{ usuarioAutenticado.perfil?.GET }} kcal</p>
+            <p class="mt-3 text-3xl font-semibold text-primary">{{ usuarioAutenticado.perfil?.GET }} kcal</p>
             <p class="mt-2 text-sm text-neutral-500">Este é o seu gasto energético diário levando em conta sua atividade
               física.</p>
           </UPageCard>
 
 
-          <div class="w-full" v-for="(itens, index) in listaDadosMacros" :key="index">
+          <div class="w-full h-full" v-for="(itens, index) in listaDadosMacros" :key="index">
             <UPageCard class="flex h-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
               <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">{{ itens.tituloMacro }}</p>
-              <p class="mt-3 text-3xl font-semibold light:text-primary">{{ itens.valor }} {{ itens.unidade }}</p>
+              <p class="mt-3 text-3xl font-semibold text-primary">{{ itens.valor }} {{ itens.unidade }}</p>
               <p class="mt-2 text-sm text-neutral-500">Quantidade diária estimada para a sua meta desejada.</p>
             </UPageCard>
           </div>
 
         </div>
-      </UPageCard>
+      </div>
 
       <UPageCard v-else class="w-full h-full font-bold p-4 light:shadow-[0px_0px_10px]" :ui="{
         container: 'justify-center items-center'
