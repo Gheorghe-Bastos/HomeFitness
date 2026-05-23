@@ -68,12 +68,12 @@ provide('abaFitnessAtiva', abaFitnessAtiva)
               aria-label="Discord"
             />
             <UButton
-              icon="i-simple-icons-x"
+              icon="mdi:linkedin"
               color="neutral"
               variant="ghost"
-              to="https://go.nuxt.com/x"
+              to="www.linkedin.com/in/gheorghebastos"
               target="_blank"
-              aria-label="X"
+              aria-label="linkedin"
             />
             <UButton
               icon="i-simple-icons-github"
