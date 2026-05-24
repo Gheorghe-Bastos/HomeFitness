@@ -8,11 +8,7 @@ export default defineNuxtConfig({
 
   supabase: {
     url: process.env.SUPABASE_URL,
-    key: process.env.SUPABASE_KEY,
-    redirectOptions: {
-      login: '/authPage',
-      callback: 'confirm'
-    }
+    key: process.env.SUPABASE_KEY
   },
 
   typescript: {
@@ -26,7 +22,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   routeRules: {
-    '/': { prerender: true }
+    '/': { redirect: '/authPage' }
   },
 
   compatibilityDate: '2025-01-15',

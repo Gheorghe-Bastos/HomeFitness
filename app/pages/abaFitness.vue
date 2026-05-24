@@ -33,10 +33,10 @@ async function verificarDadosUsuario() {
     .from('usuario')
     .select('perfil')
     .eq('id', usuarioAutenticado.value.id)
-    .single()
+    .maybeSingle()
 
   if (selectError) {
-    console.error('Erro ao buscar dados do usuário:', selectError)
+    console.error('Erro ao buscar dados do usuário:', selectError.details)
     return
   }
 
@@ -44,8 +44,11 @@ async function verificarDadosUsuario() {
     usuarioAutenticado.value.perfil = data.perfil
     console.log('Dados do usuário encontrados:', data)
     tabelaExiste.value = true
-    return
-  }
+  } else {
+    console.log('Nenhum dado de perfil encontrado para o usuário. Por favor, preencha o formulário para calcular seus dados.')
+    tabelaExiste.value = false
+  }  
+
 }
 
 verificarDadosUsuario()
@@ -161,7 +164,7 @@ async function calcular() {
       .from('usuario')
       .select('perfil')
       .eq('id', usuarioAutenticado.value.id)
-      .single()
+      .maybeSingle()
 
     if (errorPerfilExiste) {
       console.error('Erro ao verificar se o perfil do usuário existe:', errorPerfilExiste.message)
@@ -174,7 +177,7 @@ async function calcular() {
         console.log('O perfil do usuário já está atualizado no banco de dados. Nenhuma ação necessária.')
         return
       }
-
+      
       const { data: dbPerfilUpdate, error: dbErrorUpdate } = await supabase
       .from('usuario')
       .update({perfil: usuarioAutenticado.value.perfil})
