@@ -33,10 +33,10 @@ async function verificarDadosUsuario() {
     .from('usuario')
     .select('perfil')
     .eq('id', usuarioAutenticado.value.id)
-    .single()
+    .maybeSingle()
 
   if (selectError) {
-    console.error('Erro ao buscar dados do usuário:', selectError)
+    console.error('Erro ao buscar dados do usuário:', selectError.details)
     return
   }
 
@@ -45,6 +45,9 @@ async function verificarDadosUsuario() {
     console.log('Dados do usuário encontrados:', data)
     tabelaExiste.value = true
     return
+  } else {
+    console.log('Nenhum perfil encontrado para o usuário. O usuário precisa preencher os dados para calcular.')
+    tabelaExiste.value = false
   }
 }
 
@@ -161,7 +164,7 @@ async function calcular() {
       .from('usuario')
       .select('perfil')
       .eq('id', usuarioAutenticado.value.id)
-      .single()
+      .maybeSingle()
 
     if (errorPerfilExiste) {
       console.error('Erro ao verificar se o perfil do usuário existe:', errorPerfilExiste.message)

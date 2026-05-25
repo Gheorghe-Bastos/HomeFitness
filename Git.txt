@@ -1,0 +1,25 @@
+git init: Cria um novo repositório Git em uma pasta local.
+
+git clone <url-do-repositorio>: Clona um repositório existente (seja do GitHub, GitLab, etc.) para o seu computador.
+
+git status: Exibe o estado atual do repositório, mostrando arquivos modificados e prontos para commit.
+
+git add <nome-do-arquivo>: Adiciona um arquivo específico para a área de preparação (staging).
+
+git add .: Adiciona todos os arquivos modificados de uma vez para a área de preparação.
+
+git commit -m "Mensagem do commit": Salva as alterações preparadas no histórico local, adicionando uma mensagem descritiva.
+
+git push: Envia os commits locais para o repositório remoto.
+
+git pull: Baixa as atualizações do repositório remoto e as aplica na sua branch atual.
+
+git log: Exibe todo o histórico de commits da branch atual.
+
+git branch: Lista todas as branches locais e indica qual está ativa.
+
+git checkout <nome-da-branch>: Alterna para uma branch específica.
+
+git checkout -b <nome-da-branch>: Cria uma nova branch e já muda para ela no mesmo comando.
+
+git merge <nome-da-branch>: Junta o histórico da branch especificada com a branch em que você está atualmente.
