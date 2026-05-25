@@ -44,11 +44,19 @@ async function verificarDadosUsuario() {
     usuarioAutenticado.value.perfil = data.perfil
     console.log('Dados do usuário encontrados:', data)
     tabelaExiste.value = true
+<<<<<<< HEAD
     return
   } else {
     console.log('Nenhum perfil encontrado para o usuário. O usuário precisa preencher os dados para calcular.')
     tabelaExiste.value = false
   }
+=======
+  } else {
+    console.log('Nenhum dado de perfil encontrado para o usuário. Por favor, preencha o formulário para calcular seus dados.')
+    tabelaExiste.value = false
+  }  
+
+>>>>>>> 8877f940e249bace5affed3eefb83fc70d5ccdad
 }
 
 verificarDadosUsuario()
@@ -177,7 +185,7 @@ async function calcular() {
         console.log('O perfil do usuário já está atualizado no banco de dados. Nenhuma ação necessária.')
         return
       }
-
+      
       const { data: dbPerfilUpdate, error: dbErrorUpdate } = await supabase
       .from('usuario')
       .update({perfil: usuarioAutenticado.value.perfil})
