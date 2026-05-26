@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/authPage',
       callback: 'confirm',
-      exclude: ['/authPage'],
+      exclude: ['/authPage']
     }
   },
 
@@ -27,7 +27,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   routeRules: {
-    '/': { redirect: '/authPage' },
+    '/': { redirect: '/authPage' }
   },
 
   compatibilityDate: '2025-01-15',
