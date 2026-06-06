@@ -10,9 +10,9 @@ export default defineNuxtConfig({
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_KEY,
     redirectOptions: {
-      login: '/authPage',
+      login: '/login',
       callback: 'confirm',
-      exclude: ['/authPage']
+      exclude: ['/', '/login', '/confirm']
     }
   },
 
@@ -21,13 +21,13 @@ export default defineNuxtConfig({
   },
 
   devtools: {
-    enabled: true
+    enabled: false
   },
 
   css: ['~/assets/css/main.css'],
 
   routeRules: {
-    '/': { redirect: '/authPage' }
+    '/': { redirect: '/login' }
   },
 
   compatibilityDate: '2025-01-15',

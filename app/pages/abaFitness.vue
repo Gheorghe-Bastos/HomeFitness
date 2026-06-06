@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useAuthController } from '../composables/useLogin'
+import { useAbaFitnessController } from '../composables/useAbaFitness'
 
-import { useAbaFitnessController } from '../composables/useAbaFitnessController'
+const {
+  carregando
+} = useAuthController()
 
 const {
   defaultAtvFis,
@@ -20,8 +25,11 @@ const {
   calcular
 } = useAbaFitnessController()
 
-await carregarSessao()
+const carregandoAbaFitness = ref<boolean>(true)
 
+onMounted( async () => {
+await carregarSessao(carregandoAbaFitness)
+})
 </script>
 
 <template>
@@ -62,10 +70,21 @@ await carregarSessao()
         </UForm>
       </UPageCard>
 
+      <div v-if="carregandoAbaFitness" class="flex flex-col justify-around gap-7 h-full w-full m-0">
+        <div class="flex justify-around h-full gap-5">
+          <USkeleton class="w-full h-full rounded-xl" />
+          <USkeleton class="w-full h-full rounded-xl" />
+        </div>
+        <div class="flex justify-around h-full gap-3">
+          <USkeleton class="w-full h-full rounded-xl" />
+          <USkeleton class="w-full h-full rounded-xl" />
+          <USkeleton class="w-full h-full rounded-xl" />
+          <USkeleton class="w-full h-full rounded-xl" />
+        </div>
+      </div>      
 
-      <div v-if="tabelaExiste" ip="dadosDiv" class="flex flex-col justify-around gap-7 h-full w-full m-0">
+      <div v-else-if="tabelaExiste" ip="dadosDiv" class="flex flex-col justify-around gap-7 h-full w-full m-0">
         
-        <!-- <h1 class="text-3xl text-primary">AQUI ESTÃO OS RESULTADOS<UIcon name="hugeicons:body-part-six-pack"/></h1> -->
         <div class="flex justify-around h-full gap-5">
           <div class="flex w-full h-full" v-for="(item, index) in listaDadosTBMIMC" :key="index">
 

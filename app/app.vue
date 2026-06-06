@@ -71,7 +71,7 @@ provide('abaFitnessAtiva', abaFitnessAtiva)
               icon="mdi:linkedin"
               color="neutral"
               variant="ghost"
-              to="www.linkedin.com/in/gheorghebastos"
+              to="https://www.linkedin.com/in/gheorghebastos"
               target="_blank"
               aria-label="linkedin"
             />

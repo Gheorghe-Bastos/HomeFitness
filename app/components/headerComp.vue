@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
 
+const supabase = useSupabaseClient()
+
 const abaFitnessAtiva = inject<Ref<boolean>>('abaFitnessAtiva', ref(false))
 
 async function voltar() {
+  await supabase.auth.signOut()
   abaFitnessAtiva.value = false
-  navigateTo('/authPage')
+  navigateTo('/login')
 }
 
 </script>

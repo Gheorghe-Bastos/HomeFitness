@@ -1,16 +1,29 @@
 <script setup lang="ts">
 
-import { useAuthController } from '../composables/useAuthController'
+import { useAuthController } from '../composables/useLogin'
 
 const {
   emailInput,
   senhaInput,
   cadastrar,
+  carregando,
   entrar,
   cadastro,
   erro,
   erroDescription
 } = useAuthController()
+
+definePageMeta({
+  middleware: [
+    async function () {
+      const user = useSupabaseUser()
+      
+      if (user.value) {
+        return navigateTo('/abaFitness', { replace: true })
+      }
+    }
+  ]
+})
 
 </script>
 
@@ -79,6 +92,7 @@ const {
           variant="solid"
           class="w-full flex items-center justify-center"
         >
+          <UIcon v-if="carregando" name="eos-icons:loading" class="size=10"/>
           CADASTRAR
         </UButton>
 
@@ -130,7 +144,7 @@ const {
             v-model="emailInput"
             class="w-full"
             type="email"
-            placeholder="Digite seu email"  
+            placeholder="Digite seu email"
           />
         </UFormField>
 
@@ -149,6 +163,7 @@ const {
           variant="solid"
           class="w-full flex items-center justify-center"
         >
+        <UIcon v-if="carregando" name="eos-icons:loading" class="size-7"/>
           ENTRAR
         </UButton>
 
@@ -159,7 +174,7 @@ const {
             class="w-full flex items-center justify-center"
             @click="cadastrar = true"
           >
-            CADASTRAR
+            AINDA NÃO POSSUO UMA CONTA
           </UButton>
         </div>
       </UForm>

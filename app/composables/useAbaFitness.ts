@@ -1,4 +1,4 @@
-import { inject, ref, computed } from 'vue'
+import { inject, ref, computed, type Ref } from 'vue'
 import { Sexo, type Usuario, StatusAtvFisic, Objetivo } from '../types/usuario'
 import type { SelectItem } from '@nuxt/ui'
 
@@ -16,7 +16,8 @@ export const useAbaFitnessController = () => {
     email: '',
   })
 
-  async function carregarSessao() {
+  async function carregarSessao(skeletonAtivado: Ref<boolean>) {
+    skeletonAtivado.value = true
     const { data: { session } } = await supabase.auth.getSession()
 
     if (session?.user) {
@@ -33,16 +34,21 @@ export const useAbaFitnessController = () => {
 
       if (selectError) {
         console.error('Erro ao buscar dados do usuário:', selectError.details)
+        skeletonAtivado.value = false
         return
       }
 
       if (data?.perfil) {
         usuarioAutenticado.value.perfil = data.perfil
         console.log('Dados do usuário encontrados:', data)
+        skeletonAtivado.value = false
         tabelaExiste.value = true
         return
-      } else {
+      }
+      
+      else {
         console.log('Nenhum perfil encontrado para o usuário. O usuário precisa preencher os dados para calcular.')
+        skeletonAtivado.value = false
         tabelaExiste.value = false
       }
     }
