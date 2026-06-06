@@ -1,55 +1,41 @@
-# Home Fitness
+# 🏋️‍♂️ Home Fitness
 
-Welcome to Home Fitness, a web application designed to help you manage your fitness routines from the comfort of your home. This project leverages the power of Nuxt.js and Nuxt UI to provide a modern and responsive user experience.
+Bem-vindo ao **Home Fitness**, uma aplicação web full-stack desenvolvida para ajudar você a calcular, monitorar e gerenciar suas metas de saúde e rotinas de exercícios sem sair de casa. 
 
-## Features
+O projeto utiliza o ecossistema moderno do **Nuxt 3** aliado ao **Supabase** para entregar uma experiência rápida, segura e totalmente personalizada para o usuário.
 
-*   **Personalized Workouts:** Track your fitness progress and manage your workout routines.
-*   **User-Friendly Interface:** Built with Nuxt UI for a clean and intuitive design.
-*   **Responsive Design:** Accessible on various devices, from desktops to mobile phones.
+---
 
-## Technologies Used
+## 🎯 Funcionalidades Principais
 
-*   **Nuxt.js:** A progressive Vue.js framework for building modern web applications.
-*   **Vue.js:** The underlying JavaScript framework for building user interfaces.
-*   **Nuxt UI:** A collection of components and utilities for building beautiful and accessible user interfaces with Nuxt.
+* **Autenticação Segura:** Criação de conta e login gerenciados via Supabase Auth.
+* **Perfil de Saúde Personalizado:** O usuário insere dados vitais como idade, peso, altura, gênero e nível de atividade física.
+* **Calculadora de Saúde Integrada:**
+    * **TMB (Taxa Metabólica Basal):** Descubra quantas calorias seu corpo gasta em repouso.
+    * **IMC (Índice de Massa Corpórea):** Diagnóstico rápido da composição corporal.
+* **Metas de Macronutrientes:** Cálculo automatizado de Proteínas, Carboidratos e Gorduras diárias com base no objetivo do usuário (Emagrecimento, Hipertrofia ou Manutenção).
+* **Interface Responsiva & Dark Mode:** Layout adaptável para celulares, tablets e desktops com suporte nativo a tema escuro através do Nuxt UI.
 
-## Quick Start
+---
 
-Follow these steps to get your development environment set up.
+## 🛠️ Tecnologias Utilizadas
 
-### 1. Installation
+O projeto foi construído utilizando o que há de mais moderno no desenvolvimento web:
 
-Make sure to install the project dependencies:
+* **Framework Principal:** [Nuxt.js (v3)](https://nuxt.com/) - Framework Vue.js de alta performance com SSR (Server-Side Rendering).
+* **Linguagem:** [TypeScript](https://www.typescriptlang.org/) - Tipagem estática para um código mais seguro e escalável.
+* **Interface & Estilização:** [Nuxt UI](https://ui.nuxt.com/) / [Tailwind CSS](https://tailwindcss.com/) - Componentes acessíveis e estilização utilitária ágil.
+* **Backend como Serviço (BaaS):** [Supabase](https://supabase.com/) - Banco de dados PostgreSQL, Autenticação de usuários e API em tempo real.
+* **Hospedagem & Deploy:** [Vercel](https://vercel.com/) - Deploy contínuo e otimizado para aplicações Nuxt.
 
+---
+
+## 🚀 Como Executar o Projeto Localmente
+
+### Pré-requisitos
+Certifique-se de ter o [Node.js](https://nodejs.org/) instalado e o gerenciador de pacotes `pnpm`.
+
+### 1. Clonar o Repositório e Instalar Dependências
 ```bash
+# Instale as dependências do projeto
 pnpm install
-```
-
-### 2. Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-pnpm dev
-```
-
-## Production
-
-### Build
-
-Build the application for production:
-
-```bash
-pnpm build
-```
-
-### Locally Preview Production Build
-
-```bash
-pnpm preview
-```
-
-## Deploy your own
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-name=starter&repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fstarter&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fstarter-dark.png&demo-url=https%3A%2F%2Fstarter-template.nuxt.dev%2F&demo-title=Nuxt%20Starter%20Template&demo-description=A%20minimal%20template%20to%20get%20started%20with%20Nuxt%20UI.)
