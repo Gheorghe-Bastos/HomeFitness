@@ -30,7 +30,7 @@ definePageMeta({
 <template>
   <div class="flex flex-col items-center justify-center gap-4 p-4">
     <UPageHero
-      class="w-4xl"
+      class="w-full lg:w-4xl"
       title="SEU ESPAÇO FITNESS"
       description="Descubra sua Taxa Metabólica Basal, IMC e Macronutrientes para manter-se saudável e em forma antes mesmo de sair de casa."
       :ui="{
@@ -40,17 +40,17 @@ definePageMeta({
 
     <UPageCard
       v-if="cadastrar"
-      class=" flex flex-col items-center justify-center w-full max-w-md p-2 w-xl
-    light:shadow-[0px_0px_10px]"
+      class="flex flex-col items-center justify-center w-full max-w-md lg:max-w-md p-2
+      light:shadow-[0px_0px_10px]"
       :ui="{ container: 'gap-x-6 gap-y-3' }"
     >
       <div class="flex flex-col mb-2">
         <UIcon
           name="line-md:account"
-          class="w-12 h-12 text-neutral mx-auto"
+          class="w-10 h-10 sm:w-12 sm:h-12 text-neutral mx-auto"
         />
         <div class="flex flex-col justify-center items-center">
-          <h2 class="text-2xl font-medium">
+          <h2 class="text-xl sm:text-2xl font-medium">
             Cadastro
           </h2>
           <p>Insira suas informações para cadastrar sua conta.</p>
@@ -111,17 +111,17 @@ definePageMeta({
 
     <UPageCard
       v-else
-      class="flex flex-col items-center justify-center w-full max-w-md p-2 w-xl
+      class="flex flex-col items-center justify-center w-full max-w-md lg:max-w-md p-2
       light:shadow-[0px_0px_10px]"
       :ui="{ container: 'gap-x-6 gap-y-3' }"
     >
       <div class="flex flex-col mb-2">
         <UIcon
           name="line-md:account"
-          class="w-12 h-12 text-neutral mx-auto"
+          class="w-10 h-10 sm:w-12 sm:h-12 text-neutral mx-auto"
         />
         <div class="flex flex-col justify-center items-center">
-          <h2 class="text-2xl font-medium">
+          <h2 class="text-xl sm:text-2xl font-medium">
             Login
           </h2>
           <p>Insira suas credenciais para acessar sua conta.</p>

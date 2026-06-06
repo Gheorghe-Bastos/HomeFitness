@@ -18,13 +18,13 @@ async function voltar() {
     <template #left>
       <div class="flex items-center gap-0">
         <img
-          class="size-[2.3rem]"
+          class="size-[1.8rem] sm:size-[2.3rem]"
           src="/favicon.svg"
         >
-        <h1 class="text-3xl">
+        <h1 class="text-xl sm:text-3xl">
           Home
         </h1>
-        <h1 class="text-3xl text-primary">
+        <h1 class="text-xl sm:text-3xl text-primary">
           Fitness
         </h1>
       </div>

@@ -53,20 +53,12 @@ provide('abaFitnessAtiva', abaFitnessAtiva)
       <USeparator />
 
       <UFooter>
-        <div class="flex flex-col-reverse items-center justify-between">
+        <div class="flex lg:flex-col-reverse h-0 lg:h-11 items-center justify-between">
           <p class="text-muted text-sm">
             SALO - Hometech © {{ new Date().getFullYear() }}
           </p>
 
           <div>
-            <UButton
-              icon="i-simple-icons-discord"
-              color="neutral"
-              variant="ghost"
-              to="https://go.nuxt.com/discord"
-              target="_blank"
-              aria-label="Discord"
-            />
             <UButton
               icon="mdi:linkedin"
               color="neutral"

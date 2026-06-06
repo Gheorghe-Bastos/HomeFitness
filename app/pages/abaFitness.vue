@@ -33,9 +33,9 @@ await carregarSessao(carregandoAbaFitness)
 </script>
 
 <template>
-  <main class="flex justify-around items-center w-full h-[90%]">
-    <div class="flex m-8 h-full w-full justify-between gap-4">
-      <UPageCard class="w-sm h-full p-4 light:shadow-[0px_0px_10px]" :ui="{
+  <main class="flex justify-around items-center w-full min-h-[90%]">
+    <div class="flex flex-col lg:flex-row m-4 sm:m-8 h-full w-full justify-between gap-4">
+      <UPageCard class="w-full lg:w-sm h-full p-4 light:shadow-[0px_0px_10px]" :ui="{
         container: 'justify-center'
       }" spotlight spotlight-color="primary" title="FORMULÁRIO" description="Fale mais sobre você...">
         <UForm @submit.prevent="calcular" class="flex flex-col gap-3">
@@ -71,21 +71,20 @@ await carregarSessao(carregandoAbaFitness)
       </UPageCard>
 
       <div v-if="carregandoAbaFitness" class="flex flex-col justify-around gap-7 h-full w-full m-0">
-        <div class="flex justify-around h-full gap-5">
+        <div class="flex flex-col sm:flex-row justify-around h-full gap-5">
           <USkeleton class="w-full h-full rounded-xl" />
           <USkeleton class="w-full h-full rounded-xl" />
         </div>
-        <div class="flex justify-around h-full gap-3">
+        <div class="grid grid-cols-2 sm:flex sm:justify-around h-full gap-3">
           <USkeleton class="w-full h-full rounded-xl" />
           <USkeleton class="w-full h-full rounded-xl" />
           <USkeleton class="w-full h-full rounded-xl" />
           <USkeleton class="w-full h-full rounded-xl" />
         </div>
       </div>      
-
       <div v-else-if="tabelaExiste" ip="dadosDiv" class="flex flex-col justify-around gap-7 h-full w-full m-0">
         
-        <div class="flex justify-around h-full gap-5">
+        <div class="flex flex-col sm:flex-row justify-around h-full gap-5">
           <div class="flex w-full h-full" v-for="(item, index) in listaDadosTBMIMC" :key="index">
 
             <UPageCard class="w-full h-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
@@ -97,7 +96,7 @@ await carregarSessao(carregandoAbaFitness)
           </div>
         </div>
 
-        <div class="flex justify-around h-full gap-3">
+        <div class="grid grid-cols-2 sm:flex sm:justify-around h-full gap-3">
 
           <UPageCard class="w-full h-full light:shadow-[0px_0px_10px]" spotlight spotlight-color="primary">
             <p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">Gasto Energético Total</p>
