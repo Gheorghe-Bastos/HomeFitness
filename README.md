@@ -1,6 +1,6 @@
 # 🏋️‍♂️ Home Fitness
 
-Bem-vindo ao **Home Fitness**, uma aplicação web full-stack desenvolvida para ajudar você a calcular, monitorar e gerenciar suas metas de saúde e rotinas de exercícios sem sair de casa. 
+Bem-vindo ao [Home Fitness](https://home-fitness-pi.vercel.app/login), uma aplicação web full-stack desenvolvida para ajudar você a calcular, monitorar e gerenciar suas metas de saúde e rotinas de exercícios sem sair de casa. 
 
 O projeto utiliza o ecossistema moderno do **Nuxt 3** aliado ao **Supabase** para entregar uma experiência rápida, segura e totalmente personalizada para o usuário.
 
