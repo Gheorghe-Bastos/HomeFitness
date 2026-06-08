@@ -14,7 +14,7 @@ useHead({
   }
 })
 
-const title = 'HomeFit - Seu espaço fitness em casa'
+const title = 'HomeFitness - Seu espaço fitness em casa'
 const description = 'Descubra o HomeFit, seu espaço fitness em casa, faça calculos de IMC, macronutrientes de acordo com sua meta para manter-se saudável e em forma sem sair de casa.'
 
 useSeoMeta({
