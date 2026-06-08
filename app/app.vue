@@ -15,14 +15,14 @@ useHead({
 })
 
 const title = 'HomeFit - Seu espaço fitness em casa'
-const description = 'Descubra o HomeFit, seu espaço fitness em casa, faça calculos de IMC, macronutrientes, e acesse uma variedade de exercícios para manter-se saudável e em forma sem sair de casa.'
+const description = 'Descubra o HomeFit, seu espaço fitness em casa, faça calculos de IMC, macronutrientes de acordo com sua meta para manter-se saudável e em forma sem sair de casa.'
 
 useSeoMeta({
   title,
   description,
   ogTitle: title,
   ogDescription: description,
-  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/starter-light.png',
+  ogImage: 'https://github.com/user-attachments/assets/e647a8b3-ef63-49bf-b74e-e8e7498ded90',
   twitterCard: 'summary_large_image'
 })
 
