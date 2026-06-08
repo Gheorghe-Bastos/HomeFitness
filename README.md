@@ -1,10 +1,11 @@
-# 🏋️‍♂️ Home Fitness
-
 Bem-vindo ao [Home Fitness](https://home-fitness-pi.vercel.app/login), uma aplicação web full-stack desenvolvida para ajudar você a calcular, monitorar e gerenciar suas metas de saúde e rotinas de exercícios sem sair de casa. 
 
 O projeto utiliza o ecossistema moderno do **Nuxt 3** aliado ao **Supabase** para entregar uma experiência rápida, segura e totalmente personalizada para o usuário.
 
 ---
+<div>
+<img width="706" height="369" alt="tela de login" src="https://github.com/user-attachments/assets/e647a8b3-ef63-49bf-b74e-e8e7498ded90" />
+</div>
 
 ## 🎯 Funcionalidades Principais
 
@@ -17,6 +18,9 @@ O projeto utiliza o ecossistema moderno do **Nuxt 3** aliado ao **Supabase** par
 * **Interface Responsiva & Dark Mode:** Layout adaptável para celulares, tablets e desktops com suporte nativo a tema escuro através do Nuxt UI.
 
 ---
+<div>
+<img width="706" height="369" alt="tela de cálculo nutricional" src="https://github.com/user-attachments/assets/d44fc3bc-82ac-4c10-92f5-b8486e265e64" />
+</div>
 
 ## 🛠️ Tecnologias Utilizadas
 
