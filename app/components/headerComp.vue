@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue';
+import { inject, ref } from 'vue'
 
 const supabase = useSupabaseClient()
 
@@ -10,7 +10,6 @@ async function voltar() {
   abaFitnessAtiva.value = false
   navigateTo('/login')
 }
-
 </script>
 
 <template>
@@ -36,7 +35,8 @@ async function voltar() {
         color="primary"
         variant="outline"
         icon="mdi:exit-run"
-        @click="voltar"/>
+        @click="voltar"
+      />
       <UColorModeButton />
     </template>
   </UHeader>

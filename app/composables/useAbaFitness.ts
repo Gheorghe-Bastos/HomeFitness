@@ -3,7 +3,6 @@ import { Sexo, type Usuario, StatusAtvFisic, Objetivo } from '../types/usuario'
 import type { SelectItem } from '@nuxt/ui'
 
 export const useAbaFitnessController = () => {
-
   const supabase = useSupabaseClient<any>()
 
   const abaFitnessAtiva = inject<Ref<boolean>>('abaFitnessAtiva', ref(false))
@@ -13,7 +12,7 @@ export const useAbaFitnessController = () => {
   const tabelaExiste = ref<boolean>(false)
   const usuarioAutenticado = ref<Usuario>({
     id: '',
-    email: '',
+    email: ''
   })
 
   async function carregarSessao(skeletonAtivado: Ref<boolean>) {
@@ -23,7 +22,7 @@ export const useAbaFitnessController = () => {
     if (session?.user) {
       usuarioAutenticado.value = {
         id: session.user.id,
-        email: session.user.email || '',
+        email: session.user.email || ''
       }
 
       const { data, error: selectError } = await supabase
@@ -44,9 +43,7 @@ export const useAbaFitnessController = () => {
         skeletonAtivado.value = false
         tabelaExiste.value = true
         return
-      }
-      
-      else {
+      } else {
         console.log('Nenhum perfil encontrado para o usuário. O usuário precisa preencher os dados para calcular.')
         skeletonAtivado.value = false
         tabelaExiste.value = false
@@ -67,7 +64,7 @@ export const useAbaFitnessController = () => {
 
   const sexoInput = ref<SelectItem[]>([
     { label: 'Masculino', value: Sexo.masculino, icon: 'material-symbols:man' },
-    { label: 'Feminino', value: Sexo.feminino, icon: 'material-symbols:woman' },
+    { label: 'Feminino', value: Sexo.feminino, icon: 'material-symbols:woman' }
   ])
 
   const objetivoInput = ref<SelectItem[]>([
@@ -84,7 +81,6 @@ export const useAbaFitnessController = () => {
   let gGorduraPorKg: number = 0
 
   async function calcular() {
-
     if (!usuarioAutenticado.value.id) {
       console.error('Usuário não autenticado. Não é possível calcular sem um usuário válido.')
       return
@@ -95,23 +91,19 @@ export const useAbaFitnessController = () => {
     const tmb = ref<number>((10 * pesoInput.value) + (6.25 * alturaInput.value) - (5 * idadeInput.value))
 
     try {
-
       let multiplicador: number = 1.2
 
       if (defaultSexoInput.value === Sexo.masculino) {
         tmb.value += 5
-      }
-      else {
+      } else {
         tmb.value -= 161
       }
 
       if (defaultAtvFis.value === StatusAtvFisic.baixaFreq) {
         multiplicador = 1.375
-      }
-      else if (defaultAtvFis.value === StatusAtvFisic.mediaFreq) {
+      } else if (defaultAtvFis.value === StatusAtvFisic.mediaFreq) {
         multiplicador = 1.55
-      }
-      else if (defaultAtvFis.value === StatusAtvFisic.altaFreq) {
+      } else if (defaultAtvFis.value === StatusAtvFisic.altaFreq) {
         multiplicador = 1.725
       }
 
@@ -123,13 +115,11 @@ export const useAbaFitnessController = () => {
         caloriasObjetivo.value -= 450
         gProteinaPorKg = 2.0
         gGorduraPorKg = 0.8
-      }
-      else if (defaultObjetivoInput.value === Objetivo.ganhoMassa) {
+      } else if (defaultObjetivoInput.value === Objetivo.ganhoMassa) {
         caloriasObjetivo.value += 400
         gProteinaPorKg = 2.0
         gGorduraPorKg = 1.0
-      }
-      else {
+      } else {
         gProteinaPorKg = 1.8
         gGorduraPorKg = 1.0
       }
@@ -173,7 +163,6 @@ export const useAbaFitnessController = () => {
       }
 
       if (perfilExiste?.perfil) {
-
         if (perfilExiste.perfil === usuarioAutenticado.value.perfil) {
           console.log('O perfil do usuário já está atualizado no banco de dados. Nenhuma ação necessária.')
           return
@@ -193,7 +182,6 @@ export const useAbaFitnessController = () => {
       }
 
       if (perfilExiste === null) {
-
         const { data: dbPerfilInsert, error: dbInsertError } = await supabase
           .from('usuario')
           .insert({
@@ -214,16 +202,13 @@ export const useAbaFitnessController = () => {
       console.log(usuarioAutenticado.value)
 
       tabelaExiste.value = true
-
-    }
-    catch (err) {
+    } catch (err) {
       console.error('Erro inesperado no cálculo:', err)
       return
     }
   }
 
   const listaDadosTBMIMC = computed(() => {
-
     if (!tabelaExiste.value || !usuarioAutenticado.value.perfil) return []
 
     return [
@@ -288,4 +273,3 @@ export const useAbaFitnessController = () => {
     calcular
   }
 }
-

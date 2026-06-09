@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { useAuthController } from '../composables/useLogin'
 
 const {
@@ -17,14 +16,13 @@ definePageMeta({
   middleware: [
     async function () {
       const user = useSupabaseUser()
-      
+
       if (user.value) {
         return navigateTo('/abaFitness', { replace: true })
       }
     }
   ]
 })
-
 </script>
 
 <template>
@@ -92,7 +90,11 @@ definePageMeta({
           variant="solid"
           class="w-full flex items-center justify-center"
         >
-          <UIcon v-if="carregando" name="eos-icons:loading" class="size=10"/>
+          <UIcon
+            v-if="carregando"
+            name="eos-icons:loading"
+            class="size=10"
+          />
           CADASTRAR
         </UButton>
 
@@ -163,7 +165,11 @@ definePageMeta({
           variant="solid"
           class="w-full flex items-center justify-center"
         >
-        <UIcon v-if="carregando" name="eos-icons:loading" class="size-7"/>
+          <UIcon
+            v-if="carregando"
+            name="eos-icons:loading"
+            class="size-7"
+          />
           ENTRAR
         </UButton>
 

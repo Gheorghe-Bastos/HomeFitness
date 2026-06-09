@@ -6,20 +6,6 @@ export default defineNuxtConfig({
     '@nuxt/ui'
   ],
 
-  supabase: {
-    url: process.env.SUPABASE_URL,
-    key: process.env.SUPABASE_KEY,
-    redirectOptions: {
-      login: '/login',
-      callback: 'confirm',
-      exclude: ['/', '/login', '/confirm']
-    }
-  },
-
-  typescript: {
-    strict: true
-  },
-
   devtools: {
     enabled: false
   },
@@ -32,12 +18,26 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-15',
 
+  typescript: {
+    strict: true
+  },
+
   eslint: {
     config: {
       stylistic: {
         commaDangle: 'never',
         braceStyle: '1tbs'
       }
+    }
+  },
+
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
+    redirectOptions: {
+      login: '/login',
+      callback: 'confirm',
+      exclude: ['/', '/login', '/confirm']
     }
   }
 })

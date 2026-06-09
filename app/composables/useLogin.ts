@@ -1,8 +1,7 @@
 import { ref, inject, type Ref } from 'vue'
-import type { Usuario } from '../types/usuario';
+import type { Usuario } from '../types/usuario'
 
 export const useAuthController = () => {
-
   const supabase = useSupabaseClient()
   const erro = inject<Ref<boolean>>('erro', ref(false))
   const erroDescription = inject<Ref<string>>('erroDescription', ref(''))
@@ -29,13 +28,12 @@ export const useAuthController = () => {
     try {
       const { data, error: loginError } = await supabase.auth.signInWithPassword({
         email: userEmail,
-        password: userPassword,
+        password: userPassword
       })
 
       console.log('Resposta do supabase.login:', { data, loginError })
 
       if (loginError) {
-
         if (loginError.status === 400) {
           erro.value = true
           carregando.value = false
@@ -64,17 +62,13 @@ export const useAuthController = () => {
 
       console.log('Login bem sucedido, usuário:', usuarioLogado)
       await navigateTo('/abaFitness')
-    }
-
-    catch (err) {
+    } catch (err) {
       console.error('Erro inesperado no login:', err)
       erro.value = true
       carregando.value = false
       erroDescription.value = 'Ocorreu um erro durante o login. Por favor, tente novamente.'
       return
-    }
-
-    finally {
+    } finally {
       emailInput.value = ''
       senhaInput.value = ''
     }
@@ -92,11 +86,11 @@ export const useAuthController = () => {
       return
     }
     carregando.value = true
-    
+
     try {
       const { data, error: registerError } = await supabase.auth.signUp({
         email: userEmail,
-        password: userPassword,
+        password: userPassword
       })
 
       console.log('Resposta do supabase.signUp:', { data, registerError })
@@ -126,21 +120,17 @@ export const useAuthController = () => {
 
       console.log('Cadastro bem sucedido, usuário:', usuarioLogado)
       await navigateTo('/abaFitness')
-    }
-
-    catch (err) {
+    } catch (err) {
       console.error('Erro inesperado no cadastro:', err)
       erro.value = true
       carregando.value = false
       erroDescription.value = 'Ocorreu um erro durante o cadastro. Por favor, tente novamente.'
       return
-    }
-
-    finally {
+    } finally {
       emailInput.value = ''
       senhaInput.value = ''
     }
   }
-  
-  return {emailInput, senhaInput, cadastrar, carregando, entrar, cadastro, erro, erroDescription}
+
+  return { emailInput, senhaInput, cadastrar, carregando, entrar, cadastro, erro, erroDescription }
 }

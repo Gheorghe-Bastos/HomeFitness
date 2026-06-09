@@ -26,8 +26,6 @@ useSeoMeta({
   twitterCard: 'summary_large_image'
 })
 
-
-
 const erro = ref<boolean>(false)
 const erroTitle = ref<string>('')
 const erroDescription = ref<string>('')
